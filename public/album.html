@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="albums.title">摄影集详情</title>
+  <link rel="stylesheet" href="/css/vendor/tailwind.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 text-xl font-bold">
+        <span class="text-2xl">📷</span>
+        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" data-i18n="site.logo">光影集</span>
+      </a>
+      <nav class="flex items-center gap-6 text-sm">
+        <a href="/" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.works">作品</a>
+        <a href="/albums" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.albums">摄影集</a>
+        <a href="/subscribe" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.subscribe">订阅</a>
+        <a href="/admin" id="navAdmin" class="text-gray-600 hover:text-indigo-600 font-medium hidden" data-i18n="nav.admin">后台</a>
+        <a href="/login" id="navLogin" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.login">登录</a>
+        <a href="/profile" id="navProfile" class="text-gray-600 hover:text-indigo-600 font-medium hidden" data-i18n="nav.profile">个人中心</a>
+        <button id="logoutBtn" class="text-gray-500 hover:text-indigo-600 text-sm hidden" data-i18n="nav.logout">登出</button>
+        <button id="langSwitch" class="ml-2 px-3 py-1 border border-gray-300 rounded-md text-sm hover:border-indigo-500 hover:text-indigo-600 transition">
+          <span id="langLabel">English</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    <a id="backToAlbums" href="/albums" class="inline-flex items-center text-indigo-600 hover:text-indigo-700 mb-6 text-sm">
+      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      <span data-i18n="albums.backToList">返回摄影集列表</span>
+    </a>
+
+    <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-2xl p-8 md:p-12 text-white mb-10 shadow-xl">
+      <h1 id="albumTitle" class="text-3xl md:text-4xl font-bold mb-3"></h1>
+      <p id="albumDesc" class="text-white/90 mb-3 max-w-3xl"></p>
+      <p id="albumMeta" class="text-white/70 text-sm"></p>
+    </div>
+
+    <div id="albumPhotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-10 mt-20">
+    <div class="max-w-7xl mx-auto px-6 text-center text-sm">
+      <p>© 2026 <span data-i18n="site.logo">光影集</span> Photography. <span data-i18n="footer.copyright">用心记录每一个瞬间.</span></p>
+    </div>
+  </footer>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/lang.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/common.js"></script>
+  <script>
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    async function loadAlbum() {
+      const id = location.pathname.split('/').pop();
+      try {
+        const album = await api('/api/albums/' + id);
+        document.getElementById('albumTitle').textContent = album.name;
+        document.getElementById('albumDesc').textContent = album.description || '';
+        document.getElementById('albumMeta').textContent =
+          `📷 ${album.photos.length} ${window.i18n.t('albums.photosCount')} · ${window.i18n.t('albums.createdAt')} ${formatDate(album.created_at)}`;
+
+        const grid = document.getElementById('albumPhotos');
+        if (album.photos.length === 0) {
+          grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-400" data-i18n="albums.noPhotos">本摄影集暂无作品</div>`;
+          window.i18n.applyI18n();
+          return;
+        }
+
+        grid.innerHTML = album.photos.map(p => {
+          const imgUrl = photoImageUrl(p);
+          // 付费未订阅：渲染占位（不加载原图）
+          const imageHtml = p.locked
+            ? `<div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white gap-2">
+                 <span class="text-3xl">🔒</span>
+                 <span class="text-xs font-medium">${window.i18n.t('photo.lockedView')}</span>
+               </div>`
+            : `<img src="${imgUrl}" alt="${escapeHtml(p.title)}"
+                  class="w-full h-full object-cover group-hover:scale-110 transition duration-500">`;
+          return `
+            <a href="${L('/photo/' + p.id)}?from=album&id=${album.id}" class="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+              <div class="aspect-43 bg-gray-100 overflow-hidden relative">
+                ${imageHtml}
+                ${p.is_premium && subscriptionEnabled() ? `<span class="absolute top-3 right-3 px-2.5 py-1 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-full text-xs font-medium shadow-lg">${window.i18n.t('photo.premium')}</span>` : ''}
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold mb-2 group-hover:text-indigo-600 transition truncate">${escapeHtml(p.title)}</h3>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded">${p.category_name || window.i18n.t('home.uncategorized')}</span>
+                  <span>👁 ${p.views || 0}</span>
+                </div>
+              </div>
+            </a>
+          `;
+        }).join('');
+      } catch (err) {
+        showMessage('加载失败: ' + err.message, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAlbum);
+  </script>
+</body>
+</html>

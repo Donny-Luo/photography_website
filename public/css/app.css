@@ -1,0 +1,122 @@
+/* 自定义样式补充 - Tailwind 之外的细节调整 */
+
+/* 全局 */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+/* 平滑滚动 */
+html { scroll-behavior: smooth; }
+
+/* 照片卡片 */
+.photo-card-img {
+  transition: transform 0.5s ease;
+}
+.photo-card:hover .photo-card-img {
+  transform: scale(1.05);
+}
+
+/* 摄影集封面卡（4:5 宽高比 - Tailwind 2.x 不支持 aspect-[4/5]） */
+.album-card {
+  position: relative;
+  padding-top: 125%;
+  display: block;
+}
+.album-card > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 照片缩略图卡（4:3 宽高比 - Tailwind 2.x 不支持 aspect-[4/3]） */
+.aspect-43 {
+  position: relative;
+  padding-top: 75%;
+  display: block;
+  overflow: hidden;
+}
+.aspect-43 > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.aspect-43 > .absolute,
+.aspect-43 > [class*="absolute"] {
+  /* 让角标保持原 absolute 定位 */
+}
+
+/* 嵌套评论缩进：
+   顶层评论不缩进；所有“评论的回复”及更深层嵌套统一使用同一缩进位置 */
+.comment-node {
+  margin-left: 0;
+}
+.comment-node.comment-indented {
+  margin-left: 24px;
+  padding-left: 12px;
+  border-left: 2px solid #e5e7eb;
+}
+.comment-node.comment-indented .replies-container .comment-indented {
+  /* 防止 reply 的子树再次缩进，保持对齐在同一根左竖线之内 */
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
+}
+
+/* 付费作品模糊 */
+.premium-card-img {
+  filter: blur(3px);
+}
+
+/* 弹窗动画 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.modal-content {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* 表单输入聚焦 */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+/* 多行截断 */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 美化滚动条 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+/* 通知消息 */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.toast-success { background: linear-gradient(135deg, #10b981, #059669); }
+.toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }

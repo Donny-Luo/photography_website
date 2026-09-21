@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="profile.title">个人中心 - 光影集</title>
+  <link rel="stylesheet" href="/css/vendor/tailwind.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased min-h-screen">
+
+  <!-- 顶部导航 -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 text-xl font-bold">
+        <span class="text-2xl">📷</span>
+        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" data-i18n="site.logo">光影集</span>
+      </a>
+      <nav class="flex items-center gap-6 text-sm">
+        <a href="/" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.works">作品</a>
+        <a href="/albums" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.albums">摄影集</a>
+        <a href="/subscribe" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.subscribe">订阅</a>
+        <a href="/profile" class="text-indigo-600 font-bold" data-i18n="nav.profile">个人中心</a>
+        <a href="/admin" id="navAdmin" class="text-gray-600 hover:text-indigo-600 font-medium hidden" data-i18n="nav.admin">后台</a>
+        <span id="userInfo" class="hidden items-center gap-3">
+          <span class="text-indigo-600 font-medium" id="userName"></span>
+          <button id="logoutBtn" class="text-gray-500 hover:text-indigo-600 text-sm" data-i18n="nav.logout">登出</button>
+        </span>
+        <button id="langSwitch" class="ml-2 px-3 py-1 border border-gray-300 rounded-md text-sm hover:border-indigo-500 hover:text-indigo-600 transition">
+          <span id="langLabel">English</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10">
+    <!-- 顶部用户卡片 -->
+    <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-2xl p-8 text-white shadow-xl mb-8">
+      <div class="flex items-center gap-6">
+        <!-- 头像区域（可点击上传） -->
+        <div class="relative group">
+          <div id="userAvatar" class="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-4xl font-bold border-4 border-white/30 overflow-hidden cursor-pointer">
+            <span id="avatarLetter">?</span>
+            <img id="avatarImg" class="hidden w-full h-full object-cover" alt="avatar">
+          </div>
+          <label for="avatarInput" class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs rounded-full opacity-0 group-hover:opacity-100 transition cursor-pointer">
+            <span data-i18n="profile.changeAvatar">更换</span>
+          </label>
+          <input id="avatarInput" type="file" accept="image/jpeg,image/png,image/gif,image/webp" class="hidden">
+          <button id="avatarRemove" type="button" class="hidden absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600" title="删除头像">×</button>
+        </div>
+        <div class="flex-1">
+          <h1 id="profileUsername" class="text-3xl font-bold mb-1">用户名</h1>
+          <p id="profileEmail" class="text-white/80 mb-3">user@example.com</p>
+          <div class="flex items-center gap-3 text-sm">
+            <span id="profileRole" class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full">普通用户</span>
+            <span id="profileSubStatus" class="px-3 py-1 bg-amber-400/80 rounded-full hidden">✨ 会员</span>
+            <span class="text-white/70" id="profileJoinDate"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 选项卡 -->
+    <div class="flex gap-2 mb-6 border-b border-gray-200">
+      <button class="profile-tab px-5 py-3 text-sm font-medium border-b-2 border-indigo-600 text-indigo-600" data-tab="info">
+        <span data-i18n="profile.tabInfo">基本信息</span>
+      </button>
+      <button class="profile-tab px-5 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="security">
+        <span data-i18n="profile.tabSecurity">安全设置</span>
+      </button>
+      <button class="profile-tab px-5 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="subscription">
+        <span data-i18n="profile.tabSubscription">订阅状态</span>
+      </button>
+    </div>
+
+    <!-- 基本信息 -->
+    <div id="tab-info" class="profile-content">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          <span data-i18n="profile.infoTitle">修改基本信息</span>
+        </h2>
+
+        <!-- 修改用户名 -->
+        <form id="usernameForm" class="mb-6 pb-6 border-b border-gray-100">
+          <h3 class="font-medium mb-3" data-i18n="profile.usernameLabel">用户名</h3>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input type="text" id="newUsername" minlength="3" required
+              class="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              data-i18n-placeholder="profile.usernamePlaceholder">
+            <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 whitespace-nowrap" data-i18n="profile.saveBtn">保存</button>
+          </div>
+          <div id="usernameMsg" class="hidden mt-2 px-3 py-2 rounded-lg text-sm"></div>
+        </form>
+
+        <!-- 修改邮箱（需新邮箱验证码 + 当前密码）-->
+        <form id="emailForm">
+          <h3 class="font-medium mb-3" data-i18n="profile.emailLabel">邮箱地址</h3>
+          <div class="space-y-3">
+            <div class="flex flex-col sm:flex-row gap-3">
+              <input type="email" id="newEmail" required
+                class="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                data-i18n-placeholder="profile.emailPlaceholder">
+              <button type="button" id="sendCodeBtn" class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 whitespace-nowrap" data-i18n="profile.sendCode">发送验证码</button>
+            </div>
+            <input type="text" id="emailCode" required minlength="6" maxlength="6" placeholder="6 位验证码"
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+            <input type="password" id="emailCurrentPassword" required
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              data-i18n-placeholder="profile.currentPasswordPlaceholder">
+            <p class="text-xs text-gray-500" data-i18n="profile.emailHint">⚠️ 修改邮箱需要：① 向新邮箱发送验证码 ② 输入当前密码</p>
+            <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90" data-i18n="profile.saveBtn">保存</button>
+          </div>
+          <div id="emailMsg" class="hidden mt-2 px-3 py-2 rounded-lg text-sm"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 安全设置 -->
+    <div id="tab-security" class="profile-content hidden">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <span data-i18n="profile.passwordTitle">修改密码</span>
+        </h2>
+        <form id="passwordForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-2" data-i18n="profile.currentPassword">当前密码</label>
+            <input type="password" id="oldPassword" required
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" data-i18n="profile.newPassword">新密码 <span class="text-gray-400 text-xs">(<span data-i18n="profile.minChars">至少 6 位</span>)</span></label>
+            <input type="password" id="newPassword" required minlength="6"
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2" data-i18n="profile.confirmPassword">确认新密码</label>
+            <input type="password" id="confirmPassword" required minlength="6"
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div id="passwordMsg" class="hidden px-3 py-2 rounded-lg text-sm"></div>
+          <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90" data-i18n="profile.changePasswordBtn">修改密码</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 订阅状态 -->
+    <div id="tab-subscription" class="profile-content hidden">
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+          <span data-i18n="profile.subscriptionTitle">订阅状态</span>
+        </h2>
+        <div id="subscriptionInfo"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-10 mt-20">
+    <div class="max-w-7xl mx-auto px-6 text-center text-sm">
+      <p>© 2026 <span data-i18n="site.logo">光影集</span> Photography. <span data-i18n="footer.copyright">用心记录每一个瞬间.</span></p>
+    </div>
+  </footer>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/lang.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/profile.js"></script>
+</body>
+</html>

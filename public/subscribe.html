@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="subscribe.title">订阅会员</title>
+  <link rel="stylesheet" href="/css/vendor/tailwind.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased min-h-screen">
+
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 text-xl font-bold">
+        <span class="text-2xl">📷</span>
+        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" data-i18n="site.logo">光影集</span>
+      </a>
+      <nav class="flex items-center gap-6 text-sm">
+        <a href="/" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.works">作品</a>
+        <a href="/albums" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.albums">摄影集</a>
+        <a href="/subscribe" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.subscribe">订阅</a>
+        <a href="/admin" id="navAdmin" class="text-gray-600 hover:text-indigo-600 font-medium hidden" data-i18n="nav.admin">后台</a>
+        <a href="/login" id="navLogin" class="text-gray-600 hover:text-indigo-600 font-medium" data-i18n="nav.login">登录</a>
+        <a href="/profile" id="navProfile" class="text-gray-600 hover:text-indigo-600 font-medium hidden" data-i18n="nav.profile">个人中心</a>
+        <button id="logoutBtn" class="text-gray-500 hover:text-indigo-600 text-sm hidden" data-i18n="nav.logout">登出</button>
+        <button id="langSwitch" class="ml-2 px-3 py-1 border border-gray-300 rounded-md text-sm hover:border-indigo-500 hover:text-indigo-600 transition">
+          <span id="langLabel">English</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-16">
+    <div class="text-center mb-16">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" data-i18n="subscribe.title">选择适合你的订阅方案</h1>
+      <p class="text-lg text-gray-500" data-i18n="subscribe.subtitle">解锁全部付费作品，享受高清原图</p>
+    </div>
+
+    <div id="currentStatus" class="hidden max-w-2xl mx-auto mb-12 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 text-center"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto" id="plansGrid"></div>
+
+    <div class="mt-16 max-w-3xl mx-auto bg-yellow-50 border border-yellow-200 rounded-2xl p-6 text-center text-sm text-gray-600">
+      <p class="mb-1" data-i18n="subscribe.notice1">⚠️ 当前为模拟支付环境，不会产生真实扣费。</p>
+      <p data-i18n="subscribe.notice2">正式上线时，请接入支付宝/微信/Stripe 等真实支付接口。</p>
+    </div>
+  </main>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/lang.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/subscribe.js"></script>
+</body>
+</html>

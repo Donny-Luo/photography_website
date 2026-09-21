@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>后台管理 - 光影集</title>
+  <link rel="stylesheet" href="/css/vendor/tailwind.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="bg-gray-100 text-gray-900 antialiased">
+
+  <div class="flex min-h-screen">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-gray-900 text-gray-300 flex-shrink-0 flex flex-col">
+      <div class="px-6 py-5 border-b border-gray-800 flex items-center gap-2">
+        <span class="text-2xl">📷</span>
+        <span class="font-bold text-white">光影集 后台</span>
+      </div>
+      <nav class="flex-1 py-4 space-y-1">
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="dashboard">📊 数据概览</a>
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="users">👥 用户管理</a>
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="photos">📷 照片管理</a>
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="upload">⬆️ 批量上传</a>
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="albums">📚 摄影集</a>
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="categories">🗂️ 分类管理</a>
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="comments">💬 评论管理</a>
+        <a href="#" class="admin-nav-link block px-6 py-3 hover:bg-gray-800 transition border-l-4 border-transparent" data-tab="orders">💰 订阅订单</a>
+      </nav>
+      <div class="px-6 py-4 border-t border-gray-800">
+        <div class="font-bold text-white mb-2" id="adminName">管理员</div>
+        <a href="/" class="block text-sm text-gray-400 hover:text-indigo-400 py-1">返回前台</a>
+        <button id="changePasswordBtn" class="block text-sm text-gray-400 hover:text-indigo-400 py-1 w-full text-left">🔒 修改密码</button>
+        <button id="adminLogout" class="block text-sm text-gray-400 hover:text-indigo-400 py-1 w-full text-left">登出</button>
+      </div>
+    </aside>
+
+    <!-- 主内容 -->
+    <main class="flex-1 p-8 overflow-x-hidden">
+
+      <!-- 数据概览 -->
+      <div class="admin-tab" id="tab-dashboard">
+        <h2 class="text-2xl font-bold mb-6">数据概览</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="statsGrid">
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" id="statUsers">0</div><div class="text-sm text-gray-500 mt-1">注册用户</div></div>
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" id="statPhotos">0</div><div class="text-sm text-gray-500 mt-1">照片总数</div></div>
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" id="statAlbums">0</div><div class="text-sm text-gray-500 mt-1">摄影集</div></div>
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" id="statComments">0</div><div class="text-sm text-gray-500 mt-1">评论总数</div></div>
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" id="statSubs">0</div><div class="text-sm text-gray-500 mt-1">订阅数</div></div>
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center"><div class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" id="statRevenue">¥0</div><div class="text-sm text-gray-500 mt-1">总营收</div></div>
+        </div>
+      </div>
+
+      <!-- 用户管理 -->
+      <div class="admin-tab hidden" id="tab-users">
+        <h2 class="text-2xl font-bold mb-6">用户管理</h2>
+
+        <!-- 统计卡片 -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6" id="userStatsGrid">
+          <div class="bg-white p-4 rounded-xl shadow-sm text-center"><div class="text-2xl font-bold text-indigo-600" id="uStatTotal">0</div><div class="text-xs text-gray-500 mt-1">总用户</div></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm text-center"><div class="text-2xl font-bold text-purple-600" id="uStatAdmins">0</div><div class="text-xs text-gray-500 mt-1">管理员</div></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm text-center"><div class="text-2xl font-bold text-gray-700" id="uStatNormal">0</div><div class="text-xs text-gray-500 mt-1">普通用户</div></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm text-center"><div class="text-2xl font-bold text-amber-500" id="uStatSubscribed">0</div><div class="text-xs text-gray-500 mt-1">会员中</div></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm text-center"><div class="text-2xl font-bold text-emerald-600" id="uStatAvatar">0</div><div class="text-xs text-gray-500 mt-1">自定义头像</div></div>
+        </div>
+
+        <!-- 筛选 + 搜索 -->
+        <div class="bg-white rounded-xl shadow-sm p-4 mb-4 flex flex-wrap items-center gap-3">
+          <input id="userSearchInput" type="text" placeholder="搜索用户名 / 邮箱..." class="flex-1 min-w-[200px] px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <select id="userRoleFilter" class="px-3 py-2 border border-gray-200 rounded-lg">
+            <option value="">全部角色</option>
+            <option value="admin">管理员</option>
+            <option value="user">普通用户</option>
+          </select>
+          <button id="userSearchBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">搜索</button>
+        </div>
+
+        <!-- 用户表 -->
+        <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+          <table class="w-full admin-table">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">用户</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">邮箱</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">角色</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">订阅</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">评论</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">注册时间</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+              </tr>
+            </thead>
+            <tbody id="userList" class="divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="flex items-center justify-between mt-4" id="userPagination"></div>
+      </div>
+
+      <!-- 用户详情 模态框 -->
+      <div id="userDetailModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 relative">
+          <button id="userDetailClose" class="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+          <div id="userDetailBody"></div>
+        </div>
+      </div>
+
+      <!-- 照片管理 -->
+      <div class="admin-tab hidden" id="tab-photos">
+        <h2 class="text-2xl font-bold mb-6">照片管理</h2>
+        <div class="batch-toolbar bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-4 hidden" id="batchToolbar">
+          <span>已选择 <strong id="selectedCount" class="text-amber-600">0</strong> 张</span>
+          <div class="flex flex-wrap items-center gap-2 mt-2">
+            <select id="batchCategory" class="px-3 py-1.5 border border-gray-200 rounded-md text-sm bg-white"><option value="">修改分类...</option></select>
+            <button class="px-3 py-1.5 bg-indigo-600 text-white rounded-md text-xs hover:opacity-90" id="batchUpdateCategoryBtn">应用分类</button>
+            <select id="batchAlbum" class="px-3 py-1.5 border border-gray-200 rounded-md text-sm bg-white"><option value="">加入摄影集...</option></select>
+            <button class="px-3 py-1.5 bg-indigo-600 text-white rounded-md text-xs hover:opacity-90" id="batchAddToAlbumBtn">加入</button>
+            <button class="px-3 py-1.5 bg-red-500 text-white rounded-md text-xs hover:opacity-90" id="batchDeleteBtn">批量删除</button>
+            <button class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-md text-xs hover:bg-gray-300" id="batchClearBtn">取消选择</button>
+          </div>
+        </div>
+        <div class="flex gap-3 mb-4">
+          <select id="photoFilterCategory" class="px-3 py-2 border border-gray-200 rounded-md text-sm bg-white"><option value="">全部分类</option></select>
+          <select id="photoFilterAlbum" class="px-3 py-2 border border-gray-200 rounded-md text-sm bg-white"><option value="">全部摄影集</option></select>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
+              <tr>
+                <th class="px-4 py-3 text-left w-10"><input type="checkbox" id="selectAll"></th>
+                <th class="px-4 py-3 text-left">缩略图</th>
+                <th class="px-4 py-3 text-left">标题</th>
+                <th class="px-4 py-3 text-left">分类</th>
+                <th class="px-4 py-3 text-left">所属摄影集</th>
+                <th class="px-4 py-3 text-left">付费</th>
+                <th class="px-4 py-3 text-left">浏览</th>
+                <th class="px-4 py-3 text-left">上传时间</th>
+                <th class="px-4 py-3 text-left">操作</th>
+              </tr>
+            </thead>
+            <tbody id="photoList" class="text-sm divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 批量上传 -->
+      <div class="admin-tab hidden" id="tab-upload">
+        <h2 class="text-2xl font-bold mb-6">批量上传照片</h2>
+        <form id="uploadForm" class="bg-white rounded-xl shadow-sm p-6">
+          <div id="dropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/30 transition mb-6">
+            <input type="file" id="photoFiles" accept="image/*" multiple hidden>
+            <div id="dropzoneContent">
+              <div class="text-5xl mb-3">📁</div>
+              <p class="text-gray-600">拖拽多张图片到此处，或点击选择多个文件</p>
+              <p class="text-gray-400 text-sm mt-2">支持 JPG / PNG / GIF / WebP，单张最大 10MB，最多 50 张</p>
+            </div>
+            <div id="previewArea" class="hidden">
+              <div id="previewGrid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 gap-3 mb-3"></div>
+              <p id="fileCount" class="text-sm text-gray-500"></p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">统一标题 *</label>
+              <input type="text" id="photoTitleInput" required class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="为这批照片取一个统一标题（多张会自动加序号）">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">统一描述</label>
+              <textarea id="photoDesc" rows="3" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="简单介绍这批照片..."></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-2">统一分类</label>
+                <select id="photoCategorySelect" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-white"></select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2">是否付费</label>
+                <select id="photoPremium" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-white">
+                  <option value="false">免费</option>
+                  <option value="true">付费订阅</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">同时加入摄影集（可选，可多选）</label>
+              <div id="albumCheckboxes" class="flex flex-wrap gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50 min-h-[44px]"></div>
+              <button type="button" class="text-indigo-600 text-sm mt-2 hover:underline" id="newAlbumQuickBtn">+ 新建摄影集</button>
+            </div>
+            <div id="uploadMsg" class="hidden px-4 py-3 rounded-lg text-sm"></div>
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90 transition">开始上传</button>
+          </div>
+        </form>
+
+        <div id="uploadedEditor" class="hidden mt-6 bg-white rounded-xl shadow-sm p-6">
+          <h3 class="text-lg font-bold mb-2">刚上传的照片</h3>
+          <p class="text-sm text-gray-500 mb-4">点击每张照片可单独修改标题/分类/付费标记，或加入摄影集</p>
+          <div id="uploadedList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        </div>
+      </div>
+
+      <!-- 摄影集管理 -->
+      <div class="admin-tab hidden" id="tab-albums">
+        <h2 class="text-2xl font-bold mb-6">摄影集管理</h2>
+        <form id="albumForm" class="bg-white rounded-xl shadow-sm p-4 mb-4 flex flex-wrap gap-3 items-center" enctype="multipart/form-data">
+          <input type="text" id="newAlbumName" placeholder="新摄影集名称" required class="flex-1 min-w-[200px] px-4 py-2.5 border border-gray-200 rounded-lg">
+          <input type="text" id="newAlbumDesc" placeholder="描述（可选）" class="flex-1 min-w-[200px] px-4 py-2.5 border border-gray-200 rounded-lg">
+          <input type="file" id="newAlbumCover" accept="image/*" class="flex-1 min-w-[200px] px-4 py-2 border border-gray-200 rounded-lg bg-white text-sm">
+          <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90">创建摄影集</button>
+        </form>
+        <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
+              <tr><th class="px-4 py-3 text-left">封面</th><th class="px-4 py-3 text-left">名称</th><th class="px-4 py-3 text-left">描述</th><th class="px-4 py-3 text-left">照片数</th><th class="px-4 py-3 text-left">创建时间</th><th class="px-4 py-3 text-left">操作</th></tr>
+            </thead>
+            <tbody id="albumList" class="text-sm divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+        <p class="text-sm text-gray-500 mt-4 px-4 py-3 bg-indigo-50 border-l-4 border-indigo-500 rounded">📌 创建摄影集后，进入「照片管理」勾选照片批量加入；或在上传时直接勾选所属摄影集。</p>
+      </div>
+
+      <!-- 分类管理 -->
+      <div class="admin-tab hidden" id="tab-categories">
+        <h2 class="text-2xl font-bold mb-6">分类管理</h2>
+        <form id="categoryForm" class="bg-white rounded-xl shadow-sm p-4 mb-4 flex flex-wrap gap-3 items-center">
+          <input type="text" id="newCategoryName" placeholder="新分类名称" required class="flex-1 min-w-[200px] px-4 py-2.5 border border-gray-200 rounded-lg">
+          <input type="text" id="newCategoryDesc" placeholder="描述（可选）" class="flex-1 min-w-[200px] px-4 py-2.5 border border-gray-200 rounded-lg">
+          <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90">添加分类</button>
+        </form>
+        <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
+              <tr><th class="px-4 py-3 text-left">分类名</th><th class="px-4 py-3 text-left">描述</th><th class="px-4 py-3 text-left">创建时间</th><th class="px-4 py-3 text-left">操作</th></tr>
+            </thead>
+            <tbody id="categoryList" class="text-sm divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 评论管理 -->
+      <div class="admin-tab hidden" id="tab-comments">
+        <h2 class="text-2xl font-bold mb-6">评论管理</h2>
+        <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
+              <tr><th class="px-4 py-3 text-left">用户</th><th class="px-4 py-3 text-left">照片</th><th class="px-4 py-3 text-left">内容</th><th class="px-4 py-3 text-left">时间</th><th class="px-4 py-3 text-left">操作</th></tr>
+            </thead>
+            <tbody id="commentList" class="text-sm divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 订阅订单 -->
+      <div class="admin-tab hidden" id="tab-orders">
+        <h2 class="text-2xl font-bold mb-6">订阅订单</h2>
+        <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
+              <tr><th class="px-4 py-3 text-left">订单ID</th><th class="px-4 py-3 text-left">用户</th><th class="px-4 py-3 text-left">套餐</th><th class="px-4 py-3 text-left">金额</th><th class="px-4 py-3 text-left">状态</th><th class="px-4 py-3 text-left">时间</th></tr>
+            </thead>
+            <tbody id="orderList" class="text-sm divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- 照片编辑弹窗 -->
+  <div id="photoEditModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 relative">
+      <button id="modalClose" class="absolute top-3 right-4 text-2xl text-gray-400 hover:text-gray-700">&times;</button>
+      <h3 class="text-xl font-bold mb-4">编辑照片</h3>
+      <img id="modalPhotoImg" src="" alt="" class="w-full max-h-72 object-contain rounded-lg mb-4 bg-gray-100">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">标题</label>
+          <input type="text" id="modalTitle" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">描述</label>
+          <textarea id="modalDesc" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium mb-1">分类</label>
+            <select id="modalCategory" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white"></select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">付费</label>
+            <select id="modalPremium" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-white">
+              <option value="false">免费</option><option value="true">付费</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">所属摄影集（多选）</label>
+          <div id="modalAlbumChecks" class="flex flex-wrap gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50 min-h-[44px]"></div>
+        </div>
+        <button id="modalSaveBtn" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 修改密码弹窗 -->
+  <div id="passwordModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+      <button id="passwordModalClose" class="absolute top-3 right-4 text-2xl text-gray-400 hover:text-gray-700">&times;</button>
+      <h3 class="text-xl font-bold mb-4">🔒 修改密码</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">当前密码</label>
+          <input type="password" id="oldPassword" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">新密码 <span class="text-gray-400 text-xs">(至少 6 位)</span></label>
+          <input type="password" id="newPassword" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">确认新密码</label>
+          <input type="password" id="confirmPassword" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div id="passwordMsg" class="hidden px-3 py-2 rounded-lg text-sm"></div>
+        <button id="passwordSaveBtn" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:opacity-90">保存新密码</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

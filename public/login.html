@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="auth.loginTitle">登录 - 光影集</title>
+  <link rel="stylesheet" href="/css/vendor/tailwind.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-6 relative overflow-hidden">
+  <!-- 装饰背景 -->
+  <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+
+  <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
+    <div class="flex items-center justify-between mb-8">
+      <a href="/" class="flex items-center gap-2 text-xl font-bold">
+        <span class="text-2xl">📷</span>
+        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" data-i18n="site.logo">光影集</span>
+      </a>
+      <button id="langSwitch" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:border-indigo-500 hover:text-indigo-600 transition">
+        <span id="langLabel">English</span>
+      </button>
+    </div>
+
+    <h2 class="text-2xl font-bold text-center mb-8" data-i18n="auth.loginTitle">登录账号</h2>
+
+    <form id="loginForm" class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="auth.email">邮箱</label>
+        <input type="email" name="email" required
+          class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          data-i18n-placeholder="auth.emailPlaceholder">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="auth.password">密码</label>
+        <input type="password" name="password" required
+          class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          data-i18n-placeholder="auth.passwordPlaceholder">
+      </div>
+      <div id="errorMsg" class="hidden px-4 py-3 bg-red-50 text-red-600 rounded-lg text-sm"></div>
+      <button type="submit" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition shadow-lg" data-i18n="auth.login">登录</button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-gray-500">
+      <span data-i18n="auth.noAccount">还没有账号？</span>
+      <a href="/register" class="text-indigo-600 font-medium hover:underline" data-i18n="auth.registerNow">立即注册</a>
+    </p>
+    <p class="mt-3 text-center text-sm">
+      <a id="forgotLink" href="/forgot-password" class="text-gray-500 hover:text-indigo-600" data-i18n="auth.forgotPwd">忘记密码？</a>
+    </p>
+  </div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/lang.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>
