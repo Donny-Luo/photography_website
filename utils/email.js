@@ -58,7 +58,11 @@ async function sendMail({ to, subject, text, html }) {
       host: SMTP_HOST,
       port: SMTP_PORT,
       secure: SMTP_PORT === 465,
-      auth: { user: SMTP_USER, pass: SMTP_PASS }
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+      // 强制使用 IPv4（macOS / 国内网络下 IPv6 经常连不上微软 SMTP，导致 EHOSTUNREACH）
+      family: 4,
+      // 微软 SMTP 的证书链有时不完全，加这个避免自签证书报错
+      tls: { rejectUnauthorized: false }
     });
     const info = await transporter.sendMail({ from: SMTP_FROM, to, subject, text, html });
     return { messageId: info.messageId };

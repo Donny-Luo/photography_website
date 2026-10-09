@@ -6,9 +6,14 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "stop" : "lsof -nP -iTCP:3000 -sTCP:LISTEN -t | xargs kill -9"
+    "stop": "lsof -nP -iTCP:3000 -sTCP:LISTEN -t | xargs kill -9"
   },
-  "keywords": ["photo", "blog", "photography", "subscription"],
+  "keywords": [
+    "photo",
+    "blog",
+    "photography",
+    "subscription"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -20,6 +25,7 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^10.0.13",
     "sqlite3": "^5.1.6",
     "uuid": "^9.0.1"
   }
